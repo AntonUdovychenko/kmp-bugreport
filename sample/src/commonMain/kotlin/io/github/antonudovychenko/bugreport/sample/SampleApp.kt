@@ -177,7 +177,7 @@ private fun TripsScreen(padding: PaddingValues, logs: DiagnosticLogBuffer) {
                     scope.launch {
                         booking[trip.city] = true
                         failed[trip.city] = false
-                        logs.append("INFO", "Booking", "POST /bookings city=${trip.city} token=sk_live_51Hx9")
+                        logs.append("INFO", "Booking", "POST /bookings city=${trip.city} token=demo-session-7f3a")
                         delay(700)
                         // The bug the sample asks you to report. The token above is redacted before
                         // it ever reaches the log buffer.
