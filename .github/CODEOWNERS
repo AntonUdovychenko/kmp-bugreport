@@ -1,0 +1,3 @@
+# Every change to kmp-bugreport needs the maintainer's approval: the "Protect main" ruleset requires a
+# code-owner review before a pull request can merge.
+* @AntonUdovychenko

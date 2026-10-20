@@ -194,6 +194,12 @@ The workflow needs the repository secrets `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTR
 Central Portal user token), `SIGNING_KEY` (an ASCII-armoured GPG private key) and
 `SIGNING_KEY_PASSWORD`.
 
+## Contributing
+
+Issues and pull requests are welcome. `main` is protected: changes land through a pull request that
+passes CI and is approved by the maintainer ([CODEOWNERS](.github/CODEOWNERS)). CI on pull requests
+from forks starts once a maintainer approves the run.
+
 ## License
 
 Apache License 2.0 — see [LICENSE](LICENSE).
