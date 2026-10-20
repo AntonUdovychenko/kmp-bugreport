@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bugreport_title">Nahlásit chybu</string>
+    <string name="bugreport_close">Zavřít</string>
+    <string name="bugreport_send">Odeslat</string>
+    <string name="bugreport_description_placeholder">Co jste očekávali a co se místo toho stalo?</string>
+    <string name="bugreport_screenshot">Snímek obrazovky</string>
+    <string name="bugreport_remove_image">Odebrat</string>
+    <string name="bugreport_add_image">Přidat obrázek</string>
+    <string name="bugreport_attach_logs">Přiložit diagnostické záznamy</string>
+    <string name="bugreport_sent_title">Hlášení odesláno</string>
+    <string name="bugreport_sent_message">Děkujeme! Vaše hlášení bylo odesláno.</string>
+    <string name="bugreport_ok">OK</string>
+    <string name="bugreport_send_failed">Hlášení se nepodařilo odeslat. Koncept zůstal zachován – zkuste to prosím znovu.</string>
+    <string name="bugreport_capture_failed">Obrazovku se nepodařilo zachytit. Obrázek můžete přidat ručně.</string>
+    <string name="bugreport_image_unreadable">Tento obrázek nelze načíst.</string>
+    <string name="bugreport_cancel">Zrušit</string>
+    <string name="bugreport_done">Hotovo</string>
+    <string name="bugreport_undo">Zpět</string>
+    <string name="bugreport_reset">Obnovit</string>
+    <string name="bugreport_draw">Kreslit</string>
+    <string name="bugreport_crop">Oříznout</string>
+    <string name="bugreport_draw_hint">Kreslete na obrázek pro zvýraznění problému</string>
+    <string name="bugreport_crop_hint">Tažením rohů nebo okrajů obrázek ořízněte</string>
+    <string name="bugreport_bold">Tučné</string>
+    <string name="bugreport_italic">Kurzíva</string>
+    <string name="bugreport_strikethrough">Přeškrtnuté</string>
+    <string name="bugreport_code">Kód</string>
+    <string name="bugreport_insert_link">Vložit odkaz</string>
+    <string name="bugreport_edit_link">Upravit odkaz</string>
+    <string name="bugreport_remove_link">Odebrat odkaz</string>
+    <string name="bugreport_bulleted_list">Odrážkový seznam</string>
+    <string name="bugreport_numbered_list">Číslovaný seznam</string>
+    <string name="bugreport_link_text">Text</string>
+    <string name="bugreport_link_url">URL</string>
+</resources>

@@ -1,0 +1,55 @@
+# Publishes to Maven Central from a version tag (v0.1.0 for VERSION_NAME=0.1.0). The upload lands in
+# the Central Portal as a deployment to review and release there; nothing goes live automatically.
+#
+# Repository secrets it needs:
+#   MAVEN_CENTRAL_USERNAME / MAVEN_CENTRAL_PASSWORD - a user token from central.sonatype.com
+#   SIGNING_KEY / SIGNING_KEY_PASSWORD               - ASCII-armoured GPG private key and passphrase
+name: Publish
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Maven Central
+    # The iOS klibs can only be built on macOS, and every target ships in one publication.
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Tag matches VERSION_NAME
+        run: |
+          version="$(sed -n 's/^VERSION_NAME=//p' gradle.properties)"
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match VERSION_NAME=${version} in gradle.properties"
+            exit 1
+          fi
+          case "${version}" in *-SNAPSHOT)
+            echo "::error::Refusing to publish a SNAPSHOT version from a tag"
+            exit 1
+          esac
+
+      - name: Test
+        run: ./gradlew jvmTest
+
+      - name: Publish
+        run: ./gradlew publishToMavenCentral --no-configuration-cache
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_KEY_PASSWORD }}

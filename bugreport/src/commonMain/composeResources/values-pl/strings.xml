@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bugreport_title">Zgłoś błąd</string>
+    <string name="bugreport_close">Zamknij</string>
+    <string name="bugreport_send">Wyślij</string>
+    <string name="bugreport_description_placeholder">Czego oczekiwałeś i co się zamiast tego stało?</string>
+    <string name="bugreport_screenshot">Zrzut ekranu</string>
+    <string name="bugreport_remove_image">Usuń</string>
+    <string name="bugreport_add_image">Dodaj zdjęcie</string>
+    <string name="bugreport_attach_logs">Dołącz logi diagnostyczne</string>
+    <string name="bugreport_sent_title">Zgłoszenie wysłane</string>
+    <string name="bugreport_sent_message">Dziękujemy! Twoje zgłoszenie zostało wysłane.</string>
+    <string name="bugreport_ok">OK</string>
+    <string name="bugreport_send_failed">Nie udało się wysłać zgłoszenia. Szkic został zachowany — spróbuj ponownie.</string>
+    <string name="bugreport_capture_failed">Nie udało się przechwycić ekranu. Nadal możesz dodać zdjęcie.</string>
+    <string name="bugreport_image_unreadable">Nie można odczytać tego obrazu.</string>
+    <string name="bugreport_cancel">Anuluj</string>
+    <string name="bugreport_done">Gotowe</string>
+    <string name="bugreport_undo">Cofnij</string>
+    <string name="bugreport_reset">Resetuj</string>
+    <string name="bugreport_draw">Rysuj</string>
+    <string name="bugreport_crop">Przytnij</string>
+    <string name="bugreport_draw_hint">Rysuj na obrazie, aby zaznaczyć problem</string>
+    <string name="bugreport_crop_hint">Przeciągnij rogi lub krawędzie, aby przyciąć</string>
+    <string name="bugreport_bold">Pogrubienie</string>
+    <string name="bugreport_italic">Kursywa</string>
+    <string name="bugreport_strikethrough">Przekreślenie</string>
+    <string name="bugreport_code">Kod</string>
+    <string name="bugreport_insert_link">Wstaw link</string>
+    <string name="bugreport_edit_link">Edytuj link</string>
+    <string name="bugreport_remove_link">Usuń link</string>
+    <string name="bugreport_bulleted_list">Lista punktowana</string>
+    <string name="bugreport_numbered_list">Lista numerowana</string>
+    <string name="bugreport_link_text">Tekst</string>
+    <string name="bugreport_link_url">URL</string>
+</resources>

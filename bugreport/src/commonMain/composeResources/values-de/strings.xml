@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bugreport_title">Fehler melden</string>
+    <string name="bugreport_close">Schließen</string>
+    <string name="bugreport_send">Senden</string>
+    <string name="bugreport_description_placeholder">Was haben Sie erwartet und was ist stattdessen passiert?</string>
+    <string name="bugreport_screenshot">Screenshot</string>
+    <string name="bugreport_remove_image">Entfernen</string>
+    <string name="bugreport_add_image">Bild hinzufügen</string>
+    <string name="bugreport_attach_logs">Diagnoseprotokolle anhängen</string>
+    <string name="bugreport_sent_title">Bericht gesendet</string>
+    <string name="bugreport_sent_message">Vielen Dank! Ihr Bericht wurde gesendet.</string>
+    <string name="bugreport_ok">OK</string>
+    <string name="bugreport_send_failed">Der Bericht konnte nicht gesendet werden. Ihr Entwurf bleibt erhalten – bitte versuchen Sie es erneut.</string>
+    <string name="bugreport_capture_failed">Der Bildschirm konnte nicht aufgenommen werden. Sie können trotzdem ein Bild hinzufügen.</string>
+    <string name="bugreport_image_unreadable">Dieses Bild konnte nicht gelesen werden.</string>
+    <string name="bugreport_cancel">Abbrechen</string>
+    <string name="bugreport_done">Fertig</string>
+    <string name="bugreport_undo">Rückgängig</string>
+    <string name="bugreport_reset">Zurücksetzen</string>
+    <string name="bugreport_draw">Zeichnen</string>
+    <string name="bugreport_crop">Zuschneiden</string>
+    <string name="bugreport_draw_hint">Zeichnen Sie auf das Bild, um das Problem zu markieren</string>
+    <string name="bugreport_crop_hint">Ziehen Sie die Ecken oder Kanten, um zuzuschneiden</string>
+    <string name="bugreport_bold">Fett</string>
+    <string name="bugreport_italic">Kursiv</string>
+    <string name="bugreport_strikethrough">Durchgestrichen</string>
+    <string name="bugreport_code">Code</string>
+    <string name="bugreport_insert_link">Link einfügen</string>
+    <string name="bugreport_edit_link">Link bearbeiten</string>
+    <string name="bugreport_remove_link">Link entfernen</string>
+    <string name="bugreport_bulleted_list">Aufzählung</string>
+    <string name="bugreport_numbered_list">Nummerierte Liste</string>
+    <string name="bugreport_link_text">Text</string>
+    <string name="bugreport_link_url">URL</string>
+</resources>

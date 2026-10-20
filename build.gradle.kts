@@ -1,0 +1,12 @@
+plugins {
+    alias(libs.plugins.kotlinMultiplatform) apply false
+    alias(libs.plugins.composeCompiler) apply false
+    alias(libs.plugins.composeMultiplatform) apply false
+    alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
+    alias(libs.plugins.mavenPublish) apply false
+}
+
+subprojects {
+    group = "io.github.antonudovychenko"
+    version = providers.gradleProperty("VERSION_NAME").get()
+}

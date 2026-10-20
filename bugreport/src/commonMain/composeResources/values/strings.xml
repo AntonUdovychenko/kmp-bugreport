@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bugreport_title">Report a bug</string>
+    <string name="bugreport_close">Close</string>
+    <string name="bugreport_send">Send</string>
+    <string name="bugreport_description_placeholder">What did you expect and what happened instead?</string>
+    <string name="bugreport_screenshot">Screenshot</string>
+    <string name="bugreport_remove_image">Remove</string>
+    <string name="bugreport_add_image">Add image</string>
+    <string name="bugreport_attach_logs">Attach diagnostic logs</string>
+    <string name="bugreport_sent_title">Report sent</string>
+    <string name="bugreport_sent_message">Thank you! Your report has been sent.</string>
+    <string name="bugreport_ok">OK</string>
+    <string name="bugreport_send_failed">Couldn't send the report. Your draft is kept — please try again.</string>
+    <string name="bugreport_capture_failed">Couldn't capture the screen. You can still add an image.</string>
+    <string name="bugreport_image_unreadable">That image couldn't be read.</string>
+    <string name="bugreport_cancel">Cancel</string>
+    <string name="bugreport_done">Done</string>
+    <string name="bugreport_undo">Undo</string>
+    <string name="bugreport_reset">Reset</string>
+    <string name="bugreport_draw">Draw</string>
+    <string name="bugreport_crop">Crop</string>
+    <string name="bugreport_draw_hint">Draw on the image to highlight the problem</string>
+    <string name="bugreport_crop_hint">Drag the corners or edges to crop</string>
+    <string name="bugreport_bold">Bold</string>
+    <string name="bugreport_italic">Italic</string>
+    <string name="bugreport_strikethrough">Strikethrough</string>
+    <string name="bugreport_code">Code</string>
+    <string name="bugreport_insert_link">Insert link</string>
+    <string name="bugreport_edit_link">Edit link</string>
+    <string name="bugreport_remove_link">Remove link</string>
+    <string name="bugreport_bulleted_list">Bulleted list</string>
+    <string name="bugreport_numbered_list">Numbered list</string>
+    <string name="bugreport_link_text">Text</string>
+    <string name="bugreport_link_url">URL</string>
+</resources>

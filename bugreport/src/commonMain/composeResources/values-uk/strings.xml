@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bugreport_title">Повідомити про помилку</string>
+    <string name="bugreport_close">Закрити</string>
+    <string name="bugreport_send">Надіслати</string>
+    <string name="bugreport_description_placeholder">Що ви очікували і що сталося натомість?</string>
+    <string name="bugreport_screenshot">Скріншот</string>
+    <string name="bugreport_remove_image">Видалити</string>
+    <string name="bugreport_add_image">Додати зображення</string>
+    <string name="bugreport_attach_logs">Додати діагностичні журнали</string>
+    <string name="bugreport_sent_title">Звіт надіслано</string>
+    <string name="bugreport_sent_message">Дякуємо! Ваш звіт надіслано.</string>
+    <string name="bugreport_ok">OK</string>
+    <string name="bugreport_send_failed">Не вдалося надіслати звіт. Чернетку збережено — спробуйте ще раз.</string>
+    <string name="bugreport_capture_failed">Не вдалося зробити знімок екрана. Ви все одно можете додати зображення.</string>
+    <string name="bugreport_image_unreadable">Не вдалося прочитати це зображення.</string>
+    <string name="bugreport_cancel">Скасувати</string>
+    <string name="bugreport_done">Готово</string>
+    <string name="bugreport_undo">Повернути</string>
+    <string name="bugreport_reset">Скинути</string>
+    <string name="bugreport_draw">Малювати</string>
+    <string name="bugreport_crop">Обрізати</string>
+    <string name="bugreport_draw_hint">Намалюйте на зображенні, щоб виділити проблему</string>
+    <string name="bugreport_crop_hint">Перетягніть кути або краї, щоб обрізати</string>
+    <string name="bugreport_bold">Жирний</string>
+    <string name="bugreport_italic">Курсив</string>
+    <string name="bugreport_strikethrough">Закреслений</string>
+    <string name="bugreport_code">Код</string>
+    <string name="bugreport_insert_link">Вставити посилання</string>
+    <string name="bugreport_edit_link">Редагувати посилання</string>
+    <string name="bugreport_remove_link">Видалити посилання</string>
+    <string name="bugreport_bulleted_list">Маркований список</string>
+    <string name="bugreport_numbered_list">Нумерований список</string>
+    <string name="bugreport_link_text">Текст</string>
+    <string name="bugreport_link_url">URL</string>
+</resources>

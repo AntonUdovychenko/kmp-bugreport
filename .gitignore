@@ -1,0 +1,9 @@
+# Kept for when this directory becomes its own repository; inside CarGuy the root .gitignore
+# already covers these.
+.gradle/
+.kotlin/
+build/
+local.properties
+.idea/
+*.iml
+.DS_Store
