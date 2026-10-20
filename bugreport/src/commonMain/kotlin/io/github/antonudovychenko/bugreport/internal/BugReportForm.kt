@@ -51,19 +51,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.github.antonudovychenko.bugreport.BugReportController
 import io.github.antonudovychenko.bugreport.BugReportError
-import io.github.antonudovychenko.bugreport.resources.Res
-import io.github.antonudovychenko.bugreport.resources.bugreport_add_image
-import io.github.antonudovychenko.bugreport.resources.bugreport_attach_logs
-import io.github.antonudovychenko.bugreport.resources.bugreport_capture_failed
-import io.github.antonudovychenko.bugreport.resources.bugreport_close
-import io.github.antonudovychenko.bugreport.resources.bugreport_description_placeholder
-import io.github.antonudovychenko.bugreport.resources.bugreport_image_unreadable
-import io.github.antonudovychenko.bugreport.resources.bugreport_remove_image
-import io.github.antonudovychenko.bugreport.resources.bugreport_screenshot
-import io.github.antonudovychenko.bugreport.resources.bugreport_send
-import io.github.antonudovychenko.bugreport.resources.bugreport_send_failed
-import io.github.antonudovychenko.bugreport.resources.bugreport_title
-import org.jetbrains.compose.resources.stringResource
 
 private val FormMaxWidth = 560.dp
 private val ThumbnailSize = 80.dp
@@ -115,7 +102,7 @@ internal fun BugReportForm(
                 Spacer(Modifier.height(12.dp))
                 MarkdownField(
                     state = controller.description,
-                    placeholder = stringResource(Res.string.bugreport_description_placeholder),
+                    placeholder = bugReportStrings().descriptionPlaceholder,
                     modifier = Modifier.fillMaxWidth(),
                 )
                 controller.error?.let { error ->
@@ -158,7 +145,7 @@ internal fun BugReportForm(
                             enabled = !controller.sending,
                         )
                         Text(
-                            text = stringResource(Res.string.bugreport_attach_logs),
+                            text = bugReportStrings().attachLogs,
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(end = 12.dp),
                         )
@@ -177,10 +164,10 @@ private fun Header(controller: BugReportController, onSubmit: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = controller::dismiss, enabled = !controller.sending) {
-            Icon(Icons.Default.Close, contentDescription = stringResource(Res.string.bugreport_close))
+            Icon(Icons.Default.Close, contentDescription = bugReportStrings().close)
         }
         Text(
-            text = stringResource(Res.string.bugreport_title),
+            text = bugReportStrings().title,
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.weight(1f),
@@ -193,7 +180,7 @@ private fun Header(controller: BugReportController, onSubmit: () -> Unit) {
             if (controller.sending) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
-                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(Res.string.bugreport_send))
+                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = bugReportStrings().send)
             }
         }
     }
@@ -201,9 +188,9 @@ private fun Header(controller: BugReportController, onSubmit: () -> Unit) {
 
 @Composable
 private fun BugReportError.message(): String = when (this) {
-    is BugReportError.SendFailed -> message ?: stringResource(Res.string.bugreport_send_failed)
-    BugReportError.CaptureFailed -> stringResource(Res.string.bugreport_capture_failed)
-    BugReportError.ImageUnreadable -> stringResource(Res.string.bugreport_image_unreadable)
+    is BugReportError.SendFailed -> message ?: bugReportStrings().sendFailed
+    BugReportError.CaptureFailed -> bugReportStrings().captureFailed
+    BugReportError.ImageUnreadable -> bugReportStrings().imageUnreadable
 }
 
 @Composable
@@ -211,7 +198,7 @@ private fun Thumbnail(bitmap: ImageBitmap, onClick: () -> Unit, onRemove: () -> 
     Box(modifier = Modifier.size(ThumbnailSize + 8.dp).padding(top = 8.dp, end = 8.dp)) {
         Image(
             bitmap = bitmap,
-            contentDescription = stringResource(Res.string.bugreport_screenshot),
+            contentDescription = bugReportStrings().screenshot,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(ThumbnailSize)
@@ -233,7 +220,7 @@ private fun Thumbnail(bitmap: ImageBitmap, onClick: () -> Unit, onRemove: () -> 
             ) {
                 Icon(
                     Icons.Default.Close,
-                    contentDescription = stringResource(Res.string.bugreport_remove_image),
+                    contentDescription = bugReportStrings().removeImage,
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(16.dp),
                 )
@@ -270,7 +257,7 @@ private fun AddImageTile(onClick: () -> Unit) {
     ) {
         Icon(
             Icons.Default.AddPhotoAlternate,
-            contentDescription = stringResource(Res.string.bugreport_add_image),
+            contentDescription = bugReportStrings().addImage,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }

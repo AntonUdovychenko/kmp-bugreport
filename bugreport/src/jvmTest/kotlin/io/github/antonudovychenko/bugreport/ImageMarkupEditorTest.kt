@@ -18,6 +18,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.runComposeUiTest
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.swipe
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
@@ -93,6 +94,59 @@ class ImageMarkupEditorTest {
         onNodeWithText("Done").performClick()
 
         assertSame(image, result)
+    }
+
+    @Test
+    fun aStrokeStartsWhereThePointerWentDown() = runComposeUiTest {
+        var result: ImageBitmap? = null
+        setEditor(onDone = { result = it })
+
+        // One coarse move, the way a browser or a fast flick delivers it. A drag detector that waits
+        // for the touch slop starts the stroke at the move, losing everything before it.
+        val destination = imageOnScreen()
+        val start = destination.center - Offset(100f, 0f)
+        onNodeWithTag(ImageMarkupEditorCanvasTag).performTouchInput {
+            down(start)
+            moveTo(destination.center + Offset(100f, 0f))
+            up()
+        }
+        onNodeWithText("Done").performClick()
+
+        val drawn = assertNotNull(result).toPixelMap()
+        val scale = image.width / destination.width
+        val atStart = drawn[((start.x - destination.left) * scale).toInt() + 2, ((start.y - destination.top) * scale).toInt()]
+        assertTrue(atStart.red > 0.8f && atStart.green < 0.4f, "the stroke should begin at the press point, was $atStart")
+    }
+
+    @Test
+    fun aCropHandleIsGrabbedWhereThePointerWentDown() = runComposeUiTest {
+        var result: ImageBitmap? = null
+        setEditor(onDone = { result = it })
+
+        onNodeWithText("Crop").performClick()
+        val destination = imageOnScreen()
+        onNodeWithTag(ImageMarkupEditorCanvasTag).performTouchInput {
+            down(destination.topLeft + Offset(2f, 2f))
+            moveTo(destination.topLeft + Offset(80f, 60f))
+            up()
+        }
+        onNodeWithText("Done").performClick()
+
+        val cropped = assertNotNull(result)
+        assertTrue(cropped.width < image.width && cropped.height < image.height, "was ${cropped.width}x${cropped.height}")
+    }
+
+    @Test
+    fun aTapLeavesADot() = runComposeUiTest {
+        var result: ImageBitmap? = null
+        setEditor(onDone = { result = it })
+
+        val destination = imageOnScreen()
+        onNodeWithTag(ImageMarkupEditorCanvasTag).performTouchInput { click(destination.center) }
+        onNodeWithText("Done").performClick()
+
+        val dot = assertNotNull(result).toPixelMap().let { it[it.width / 2, it.height / 2] }
+        assertTrue(dot.red > 0.8f && dot.green < 0.4f, "expected the pen colour, was $dot")
     }
 
     private fun androidx.compose.ui.test.ComposeUiTest.setEditor(onDone: (ImageBitmap) -> Unit) {

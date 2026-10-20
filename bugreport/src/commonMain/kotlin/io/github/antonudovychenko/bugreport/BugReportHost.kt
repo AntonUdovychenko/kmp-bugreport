@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,15 +31,12 @@ import io.github.antonudovychenko.bugreport.internal.openImageEditor
 import io.github.antonudovychenko.bugreport.internal.scaledToMax
 import io.github.antonudovychenko.bugreport.internal.shouldShowForm
 import io.github.antonudovychenko.bugreport.internal.toSoftwareBitmap
-import io.github.antonudovychenko.bugreport.resources.Res
-import io.github.antonudovychenko.bugreport.resources.bugreport_ok
-import io.github.antonudovychenko.bugreport.resources.bugreport_sent_message
-import io.github.antonudovychenko.bugreport.resources.bugreport_sent_title
+import io.github.antonudovychenko.bugreport.internal.LocalBugReportStrings
+import io.github.antonudovychenko.bugreport.internal.rememberBugReportStrings
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.compose.resources.stringResource
 
 private val DefaultConfig = BugReportConfig()
 
@@ -172,69 +170,73 @@ public fun BugReportHost(
         }
     }
 
-    if (shouldShowForm(controller.isOpen, pendingEditingIndex, editingIndex)) {
-        BugReportForm(
-            controller = controller,
-            maxImages = config.maxImages,
-            allowImagePicking = config.allowImagePicking,
-            onSubmit = ::submit,
-            onAddImage = { showPicker = true },
-            onEditImage = { index ->
-                openImageEditor(
-                    index = index,
-                    clearFocus = { focusManager.clearFocus(force = true) },
-                    hideKeyboard = { keyboardController?.hide() },
-                    selectImage = { pendingEditingIndex = it },
-                )
-            },
-        )
-    }
-
-    editingIndex?.let { index ->
-        val image = controller.images.getOrNull(index)
-        if (image == null) {
-            LaunchedEffect(index) { editingIndex = null }
-        } else {
-            ImageMarkupEditor(
-                image = image,
-                onDone = { edited ->
-                    controller.replaceImage(index, edited)
-                    editingIndex = null
+    // Resolved here, in the app's composition, and handed to the dialogs; see BugReportStrings.
+    val strings = rememberBugReportStrings()
+    CompositionLocalProvider(LocalBugReportStrings provides strings) {
+        if (shouldShowForm(controller.isOpen, pendingEditingIndex, editingIndex)) {
+            BugReportForm(
+                controller = controller,
+                maxImages = config.maxImages,
+                allowImagePicking = config.allowImagePicking,
+                onSubmit = ::submit,
+                onAddImage = { showPicker = true },
+                onEditImage = { index ->
+                    openImageEditor(
+                        index = index,
+                        clearFocus = { focusManager.clearFocus(force = true) },
+                        hideKeyboard = { keyboardController?.hide() },
+                        selectImage = { pendingEditingIndex = it },
+                    )
                 },
-                onCancel = { editingIndex = null },
-                penColor = config.penColor,
-                penWidth = config.penWidth,
             )
         }
-    }
 
-    if (showPicker) {
-        PlatformImagePicker(
-            maxItems = (config.maxImages - controller.images.size).coerceAtLeast(1),
-            onPicked = { encoded ->
-                showPicker = false
-                scope.launch {
-                    val decoded = withContext(Dispatchers.Default) {
-                        encoded.map { bytes -> runCatching { decodeImage(bytes, config.maxImageDimension) }.getOrNull() }
+        editingIndex?.let { index ->
+            val image = controller.images.getOrNull(index)
+            if (image == null) {
+                LaunchedEffect(index) { editingIndex = null }
+            } else {
+                ImageMarkupEditor(
+                    image = image,
+                    onDone = { edited ->
+                        controller.replaceImage(index, edited)
+                        editingIndex = null
+                    },
+                    onCancel = { editingIndex = null },
+                    penColor = config.penColor,
+                    penWidth = config.penWidth,
+                )
+            }
+        }
+
+        if (showPicker) {
+            PlatformImagePicker(
+                maxItems = (config.maxImages - controller.images.size).coerceAtLeast(1),
+                onPicked = { encoded ->
+                    showPicker = false
+                    scope.launch {
+                        val decoded = withContext(Dispatchers.Default) {
+                            encoded.map { bytes -> runCatching { decodeImage(bytes, config.maxImageDimension) }.getOrNull() }
+                        }
+                        controller.addImages(decoded.filterNotNull(), config.maxImages)
+                        if (decoded.any { it == null }) controller.error = BugReportError.ImageUnreadable
                     }
-                    controller.addImages(decoded.filterNotNull(), config.maxImages)
-                    if (decoded.any { it == null }) controller.error = BugReportError.ImageUnreadable
-                }
-            },
-            onDismiss = { showPicker = false },
-        )
-    }
+                },
+                onDismiss = { showPicker = false },
+            )
+        }
 
-    if (controller.showSuccess) {
-        AlertDialog(
-            onDismissRequest = { controller.showSuccess = false },
-            title = { Text(stringResource(Res.string.bugreport_sent_title)) },
-            text = { Text(stringResource(Res.string.bugreport_sent_message)) },
-            confirmButton = {
-                TextButton(onClick = { controller.showSuccess = false }) {
-                    Text(stringResource(Res.string.bugreport_ok))
-                }
-            },
-        )
+        if (controller.showSuccess) {
+            AlertDialog(
+                onDismissRequest = { controller.showSuccess = false },
+                title = { Text(strings.sentTitle) },
+                text = { Text(strings.sentMessage) },
+                confirmButton = {
+                    TextButton(onClick = { controller.showSuccess = false }) {
+                        Text(strings.ok)
+                    }
+                },
+            )
+        }
     }
 }

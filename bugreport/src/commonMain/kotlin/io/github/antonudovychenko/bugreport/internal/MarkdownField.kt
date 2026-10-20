@@ -68,21 +68,6 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.ui.BasicRichTextEditor
-import io.github.antonudovychenko.bugreport.resources.Res
-import io.github.antonudovychenko.bugreport.resources.bugreport_bold
-import io.github.antonudovychenko.bugreport.resources.bugreport_bulleted_list
-import io.github.antonudovychenko.bugreport.resources.bugreport_cancel
-import io.github.antonudovychenko.bugreport.resources.bugreport_code
-import io.github.antonudovychenko.bugreport.resources.bugreport_edit_link
-import io.github.antonudovychenko.bugreport.resources.bugreport_insert_link
-import io.github.antonudovychenko.bugreport.resources.bugreport_italic
-import io.github.antonudovychenko.bugreport.resources.bugreport_link_text
-import io.github.antonudovychenko.bugreport.resources.bugreport_link_url
-import io.github.antonudovychenko.bugreport.resources.bugreport_numbered_list
-import io.github.antonudovychenko.bugreport.resources.bugreport_ok
-import io.github.antonudovychenko.bugreport.resources.bugreport_remove_link
-import io.github.antonudovychenko.bugreport.resources.bugreport_strikethrough
-import org.jetbrains.compose.resources.stringResource
 
 private val ToolbarButtonSize = 40.dp
 private val ToolbarIconSize = 20.dp
@@ -196,39 +181,39 @@ private fun FormattingToolbar(state: RichTextState, onInsertLinkClick: () -> Uni
     ) {
         ToolbarToggle(
             icon = Icons.Default.FormatBold,
-            description = stringResource(Res.string.bugreport_bold),
+            description = bugReportStrings().bold,
             selected = span.fontWeight == FontWeight.Bold,
             onClick = { state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold)) },
         )
         ToolbarToggle(
             icon = Icons.Default.FormatItalic,
-            description = stringResource(Res.string.bugreport_italic),
+            description = bugReportStrings().italic,
             selected = span.fontStyle == FontStyle.Italic,
             onClick = { state.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic)) },
         )
         ToolbarToggle(
             icon = Icons.Default.StrikethroughS,
-            description = stringResource(Res.string.bugreport_strikethrough),
+            description = bugReportStrings().strikethrough,
             selected = span.textDecoration?.contains(TextDecoration.LineThrough) == true,
             onClick = { state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.LineThrough)) },
         )
         ToolbarToggle(
             icon = Icons.Default.Code,
-            description = stringResource(Res.string.bugreport_code),
+            description = bugReportStrings().code,
             selected = state.isCodeSpan,
             onClick = { state.toggleCodeSpan() },
         )
         ToolbarDivider()
         ToolbarToggle(
             icon = Icons.Default.Link,
-            description = stringResource(Res.string.bugreport_insert_link),
+            description = bugReportStrings().insertLink,
             selected = state.isLink,
             onClick = onInsertLinkClick,
         )
         if (state.isLink) {
             ToolbarToggle(
                 icon = Icons.Default.LinkOff,
-                description = stringResource(Res.string.bugreport_remove_link),
+                description = bugReportStrings().removeLink,
                 selected = false,
                 onClick = { state.removeLink() },
             )
@@ -236,13 +221,13 @@ private fun FormattingToolbar(state: RichTextState, onInsertLinkClick: () -> Uni
         ToolbarDivider()
         ToolbarToggle(
             icon = Icons.AutoMirrored.Filled.FormatListBulleted,
-            description = stringResource(Res.string.bugreport_bulleted_list),
+            description = bugReportStrings().bulletedList,
             selected = state.isUnorderedList,
             onClick = { state.toggleUnorderedList() },
         )
         ToolbarToggle(
             icon = Icons.Default.FormatListNumbered,
-            description = stringResource(Res.string.bugreport_numbered_list),
+            description = bugReportStrings().numberedList,
             selected = state.isOrderedList,
             onClick = { state.toggleOrderedList() },
         )
@@ -313,14 +298,14 @@ private fun LinkDialog(state: RichTextState, initialSelection: TextRange, onDism
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(stringResource(if (isEditingExisting) Res.string.bugreport_edit_link else Res.string.bugreport_insert_link))
+            Text(if (isEditingExisting) bugReportStrings().editLink else bugReportStrings().insertLink)
         },
         text = {
             Column {
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
-                    label = { Text(stringResource(Res.string.bugreport_link_text)) },
+                    label = { Text(bugReportStrings().linkText) },
                     enabled = textFieldEnabled,
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
@@ -328,7 +313,7 @@ private fun LinkDialog(state: RichTextState, initialSelection: TextRange, onDism
                 OutlinedTextField(
                     value = url,
                     onValueChange = { url = it },
-                    label = { Text(stringResource(Res.string.bugreport_link_url)) },
+                    label = { Text(bugReportStrings().linkUrl) },
                     placeholder = { Text("https://") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri, imeAction = ImeAction.Done),
@@ -338,10 +323,10 @@ private fun LinkDialog(state: RichTextState, initialSelection: TextRange, onDism
             }
         },
         confirmButton = {
-            TextButton(enabled = canSubmit, onClick = submit) { Text(stringResource(Res.string.bugreport_ok)) }
+            TextButton(enabled = canSubmit, onClick = submit) { Text(bugReportStrings().ok) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(Res.string.bugreport_cancel)) }
+            TextButton(onClick = onDismiss) { Text(bugReportStrings().cancel) }
         },
     )
 }

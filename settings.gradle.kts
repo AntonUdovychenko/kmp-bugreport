@@ -39,3 +39,11 @@ dependencyResolutionManagement {
 
 include(":bugreport")
 include(":bugreport-ktor")
+
+// The sample apps are only part of the standalone build. When an app pulls this build in with
+// `includeBuild` (CarGuy does), it should not configure an extra Android application and a desktop
+// distribution it never uses.
+if (gradle.parent == null) {
+    include(":sample")
+    include(":sample-android")
+}

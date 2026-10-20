@@ -3,6 +3,11 @@
 Drop-in in-app bug reporting for **Compose Multiplatform** — Android, iOS, desktop (JVM) and web
 (Wasm and JS).
 
+<p align="center">
+  <img src="docs/media/android-demo.gif" width="300"
+       alt="On Android, taking a screenshot opens the report form with the screen attached; the user writes a Markdown description, circles the error, crops the image and sends it">
+</p>
+
 - **Screenshot capture** of your app's content when the report opens. On iOS and Android 14+ the
   form also opens by itself when the user takes a system screenshot.
 - **Markup and crop editor**: draw on an image to circle the problem, crop away what doesn't matter
@@ -18,6 +23,22 @@ Drop-in in-app bug reporting for **Compose Multiplatform** — Android, iOS, des
 
 > **Status:** pre-release. `0.1.0` is not on Maven Central yet; until it is, build from source with
 > `includeBuild` (see [Build](#build)).
+
+## See it
+
+Recorded from the [sample app](#sample-app) on an Android 16 emulator: a booking fails, the user
+takes a screenshot, and the form opens with that screen attached.
+
+| Describe it in Markdown | Circle the problem | Crop to what matters | What your sender gets |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/media/android-form.png" width="200" alt="Report form with a bold word and a numbered list"> | <img src="docs/media/android-markup.png" width="200" alt="Image editor with a red loop around the error message"> | <img src="docs/media/android-crop.png" width="200" alt="Crop mode with the frame dragged to the failing card"> | <img src="docs/media/android-inbox.png" width="200" alt="The received report: Markdown, the edited JPEG, redacted logs and the device"> |
+
+The same UI on desktop, following the app's light or dark theme:
+
+<p align="center">
+  <img src="docs/media/desktop-light.png" width="49%" alt="Report form over the sample app on desktop, light theme">
+  <img src="docs/media/desktop-dark.png" width="49%" alt="Report form over the sample app on desktop, dark theme">
+</p>
 
 ## Install
 
@@ -115,6 +136,21 @@ BugReportConfig(
 
 `ImageMarkupEditor(image, onDone, onCancel)` is public and depends on nothing else here — use it
 anywhere you want a user to annotate or crop an `ImageBitmap`.
+
+## Sample app
+
+[`sample/`](sample) is a small travel app whose **Book** button always fails — report it, then open
+**Inbox** to see exactly what a `BugReportSender` receives: the Markdown, the edited images, the
+redacted logs and the device.
+
+```bash
+./gradlew :sample:run                              # desktop
+./gradlew :sample:wasmJsBrowserDevelopmentRun      # web, opens a browser
+./gradlew :sample-android:installDebug             # Android device or emulator
+```
+
+On Android 14+ take a screenshot (power + volume down, or `adb shell input keyevent 120` on an
+emulator) to open the form without touching the app's own button.
 
 ## Platform notes
 

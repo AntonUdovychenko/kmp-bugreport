@@ -3,7 +3,9 @@ package io.github.antonudovychenko.bugreport.editor
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +28,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -48,6 +51,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -59,16 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import io.github.antonudovychenko.bugreport.BugReportConfig
-import io.github.antonudovychenko.bugreport.resources.Res
-import io.github.antonudovychenko.bugreport.resources.bugreport_cancel
-import io.github.antonudovychenko.bugreport.resources.bugreport_crop
-import io.github.antonudovychenko.bugreport.resources.bugreport_crop_hint
-import io.github.antonudovychenko.bugreport.resources.bugreport_done
-import io.github.antonudovychenko.bugreport.resources.bugreport_draw
-import io.github.antonudovychenko.bugreport.resources.bugreport_draw_hint
-import io.github.antonudovychenko.bugreport.resources.bugreport_reset
-import io.github.antonudovychenko.bugreport.resources.bugreport_undo
-import org.jetbrains.compose.resources.stringResource
+import io.github.antonudovychenko.bugreport.internal.LocalBugReportStrings
+import io.github.antonudovychenko.bugreport.internal.bugReportStrings
 import kotlin.math.roundToInt
 
 private enum class EditorMode { Draw, Crop }
@@ -97,18 +93,22 @@ public fun ImageMarkupEditor(
     penColor: Color = BugReportConfig.DefaultPenColor,
     penWidth: Dp = 4.dp,
 ) {
+    // Resolved outside the dialog, as BugReportHost does for its own dialogs (see BugReportStrings).
+    val strings = bugReportStrings()
     Dialog(
         onDismissRequest = onCancel,
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
-        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
-            ImageMarkupEditorContent(
-                image = image,
-                onDone = onDone,
-                onCancel = onCancel,
-                penColor = penColor,
-                penWidth = penWidth,
-            )
+        CompositionLocalProvider(LocalBugReportStrings provides strings) {
+            Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
+                ImageMarkupEditorContent(
+                    image = image,
+                    onDone = onDone,
+                    onCancel = onCancel,
+                    penColor = penColor,
+                    penWidth = penWidth,
+                )
+            }
         }
     }
 }
@@ -160,18 +160,18 @@ internal fun ImageMarkupEditorContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TextButton(onClick = onCancel) {
-                Text(stringResource(Res.string.bugreport_cancel), color = Color.White)
+                Text(bugReportStrings().cancel, color = Color.White)
             }
             Row {
                 EditorIconButton(
                     icon = Icons.AutoMirrored.Filled.Undo,
-                    description = stringResource(Res.string.bugreport_undo),
+                    description = bugReportStrings().undo,
                     enabled = ops.isNotEmpty(),
                     onClick = { ops.removeAt(ops.lastIndex) },
                 )
                 EditorIconButton(
                     icon = Icons.Default.RestartAlt,
-                    description = stringResource(Res.string.bugreport_reset),
+                    description = bugReportStrings().reset,
                     enabled = ops.isNotEmpty() || pendingCrop != visible,
                     onClick = {
                         ops.clear()
@@ -183,7 +183,7 @@ internal fun ImageMarkupEditorContent(
                 if (mode == EditorMode.Crop) applyPendingCrop()
                 onDone(renderMarkup(image, ops.toList()))
             }) {
-                Text(stringResource(Res.string.bugreport_done), color = Color.White)
+                Text(bugReportStrings().done, color = Color.White)
             }
         }
 
@@ -194,51 +194,48 @@ internal fun ImageMarkupEditorContent(
                 .testTag(ImageMarkupEditorCanvasTag)
                 .onSizeChanged { canvasSize = it }
                 .pointerInput(mode) {
-                    when (mode) {
-                        EditorMode.Draw -> detectDragGestures(
-                            onDragStart = { position ->
+                    // Hand-rolled rather than detectDragGestures: that reports a drag only once it
+                    // passes the touch slop, so every stroke lost its first ~8 dp and the crop
+                    // handle was hit-tested where the slop ended instead of where the finger went
+                    // down. Here both start at the down position, and a tap leaves a dot.
+                    awaitEachGesture {
+                        val down = awaitFirstDown()
+                        val t = latestTransform ?: return@awaitEachGesture
+                        when (mode) {
+                            EditorMode.Draw -> {
+                                down.consume()
                                 currentStroke.clear()
-                                latestTransform?.let { currentStroke.add(it.toImage(position)) }
-                            },
-                            onDrag = { change, _ ->
-                                change.consume()
-                                latestTransform?.let { currentStroke.add(it.toImage(change.position)) }
-                            },
-                            onDragEnd = {
-                                val t = latestTransform
-                                if (currentStroke.isNotEmpty() && t != null) {
+                                currentStroke.add(t.toImage(down.position))
+                                val released = drag(down.id) { change ->
+                                    change.consume()
+                                    currentStroke.add(t.toImage(change.position))
+                                }
+                                if (released && currentStroke.isNotEmpty()) {
                                     ops.add(MarkupOp.Stroke(currentStroke.toList(), penWidthPx / t.scale, penColor))
                                 }
                                 currentStroke.clear()
-                            },
-                            onDragCancel = { currentStroke.clear() },
-                        )
+                            }
 
-                        EditorMode.Crop -> {
-                            var handle: CropHandle? = null
-                            detectDragGestures(
-                                onDragStart = { position ->
-                                    handle = latestTransform?.let { t ->
-                                        hitCropHandle(t.toScreen(latestPendingCrop), position, CropTouchRadius.toPx())
-                                    }
-                                },
-                                onDrag = { change, dragAmount ->
-                                    val grabbed = handle
-                                    val t = latestTransform
-                                    if (grabbed != null && t != null) {
-                                        change.consume()
-                                        pendingCrop = dragCropRect(
-                                            rect = latestPendingCrop,
-                                            handle = grabbed,
-                                            delta = dragAmount / t.scale,
-                                            bounds = t.source,
-                                            minSize = CropMinSize.toPx() / t.scale,
-                                        )
-                                    }
-                                },
-                                onDragEnd = { handle = null },
-                                onDragCancel = { handle = null },
-                            )
+                            EditorMode.Crop -> {
+                                val handle = hitCropHandle(t.toScreen(latestPendingCrop), down.position, CropTouchRadius.toPx())
+                                    ?: return@awaitEachGesture
+                                down.consume()
+                                // Accumulated locally: several moves can arrive before the state
+                                // read through latestPendingCrop catches up.
+                                var rect = latestPendingCrop
+                                drag(down.id) { change ->
+                                    val delta = change.positionChange()
+                                    change.consume()
+                                    rect = dragCropRect(
+                                        rect = rect,
+                                        handle = handle,
+                                        delta = delta / t.scale,
+                                        bounds = t.source,
+                                        minSize = CropMinSize.toPx() / t.scale,
+                                    )
+                                    pendingCrop = rect
+                                }
+                            }
                         }
                     }
                 },
@@ -260,9 +257,7 @@ internal fun ImageMarkupEditorContent(
         }
 
         Text(
-            text = stringResource(
-                if (mode == EditorMode.Draw) Res.string.bugreport_draw_hint else Res.string.bugreport_crop_hint
-            ),
+            text = if (mode == EditorMode.Draw) bugReportStrings().drawHint else bugReportStrings().cropHint,
             style = MaterialTheme.typography.bodySmall,
             color = Color.White,
             textAlign = TextAlign.Center,
@@ -275,7 +270,7 @@ internal fun ImageMarkupEditorContent(
         ) {
             ModeButton(
                 icon = Icons.Default.Draw,
-                label = stringResource(Res.string.bugreport_draw),
+                label = bugReportStrings().draw,
                 selected = mode == EditorMode.Draw,
                 onClick = {
                     // Leaving crop mode keeps the crop the user framed: what was dimmed is cut.
@@ -285,7 +280,7 @@ internal fun ImageMarkupEditorContent(
             )
             ModeButton(
                 icon = Icons.Default.Crop,
-                label = stringResource(Res.string.bugreport_crop),
+                label = bugReportStrings().crop,
                 selected = mode == EditorMode.Crop,
                 onClick = {
                     pendingCrop = visible

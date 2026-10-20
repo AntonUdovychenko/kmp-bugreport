@@ -36,6 +36,9 @@ jobs:
       - name: Test and compile
         run: ./gradlew jvmTest compileAndroidMain compileKotlinWasmJs compileKotlinJs
 
+      - name: Build the sample apps
+        run: ./gradlew :sample:compileKotlinJvm :sample:compileKotlinWasmJs :sample-android:assembleDebug
+
       - name: Upload test reports
         if: failure()
         uses: actions/upload-artifact@v7
