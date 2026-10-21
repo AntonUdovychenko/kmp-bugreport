@@ -1,6 +1,5 @@
-// Standalone build for the bug-report library. CarGuy pulls it in with `includeBuild("bugreport")`
-// (a Gradle composite build), so it must never depend on anything from the app — it is destined to
-// be split into its own repository with `git subtree split --prefix=bugreport`.
+// An app can develop against a local checkout of this build with `includeBuild("path/to/kmp-bugreport")`
+// (a Gradle composite build), which substitutes it for the published artifacts.
 //
 // The root project is deliberately NOT called "bugreport": composite-build substitution matches on
 // group:name, and a root sharing the library module's coordinates would make the match ambiguous.
@@ -41,8 +40,8 @@ include(":bugreport")
 include(":bugreport-ktor")
 
 // The sample apps are only part of the standalone build. When an app pulls this build in with
-// `includeBuild` (CarGuy does), it should not configure an extra Android application and a desktop
-// distribution it never uses.
+// `includeBuild`, it should not configure an extra Android application and a desktop distribution it
+// never uses.
 if (gradle.parent == null) {
     include(":sample")
     include(":sample-android")
