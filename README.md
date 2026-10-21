@@ -1,5 +1,9 @@
 # KMP Bug Report
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.antonudovychenko/bugreport)](https://central.sonatype.com/artifact/io.github.antonudovychenko/bugreport)
+[![CI](https://github.com/AntonUdovychenko/kmp-bugreport/actions/workflows/ci.yml/badge.svg)](https://github.com/AntonUdovychenko/kmp-bugreport/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+
 Drop-in in-app bug reporting for **Compose Multiplatform** — Android, iOS, desktop (JVM) and web
 (Wasm and JS).
 
@@ -22,9 +26,6 @@ Drop-in in-app bug reporting for **Compose Multiplatform** — Android, iOS, des
 - **Bring your own transport.** You get a `BugReport`; send it anywhere. A Ktor multipart sender is
   included.
 - Translated into English, Czech, German, Polish and Ukrainian.
-
-> **Status:** pre-release. `0.1.0` is not on Maven Central yet; until it is, build from source with
-> `includeBuild` (see [Build](#build)).
 
 ## See it
 
