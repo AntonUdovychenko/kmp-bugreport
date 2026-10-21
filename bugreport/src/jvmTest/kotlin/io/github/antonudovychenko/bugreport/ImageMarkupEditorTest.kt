@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.dp
 import io.github.antonudovychenko.bugreport.editor.FitTransform
 import io.github.antonudovychenko.bugreport.editor.ImageMarkupEditorCanvasTag
 import io.github.antonudovychenko.bugreport.editor.ImageMarkupEditorContent
+import io.github.antonudovychenko.bugreport.internal.fullScreenDialogProperties
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -147,6 +149,16 @@ class ImageMarkupEditorTest {
 
         val dot = assertNotNull(result).toPixelMap().let { it[it.width / 2, it.height / 2] }
         assertTrue(dot.red > 0.8f && dot.green < 0.4f, "expected the pen colour, was $dot")
+    }
+
+    @Test
+    fun theEditorDialogCoversTheSystemBars() {
+        // The same properties serve iOS, where platform insets laid the editor out inside the safe
+        // area: its black background stopped short of the status bar and home indicator, and the
+        // scrim showed there. The editor pads its own controls instead.
+        val properties = fullScreenDialogProperties()
+        assertFalse(properties.usePlatformInsets)
+        assertFalse(properties.usePlatformDefaultWidth)
     }
 
     private fun androidx.compose.ui.test.ComposeUiTest.setEditor(onDone: (ImageBitmap) -> Unit) {

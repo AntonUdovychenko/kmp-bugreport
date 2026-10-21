@@ -64,3 +64,15 @@ public class DeviceInfo(
 }
 
 internal expect fun currentDeviceInfo(): DeviceInfo
+
+/**
+ * The model of an Apple device: UIKit's model ("iPhone") and the machine identifier
+ * ("iPhone16,2") that says which one. In the simulator `uname` reports the Mac's architecture
+ * ("arm64"), so the simulated device's identifier ([simulatorMachine]) is used instead.
+ */
+internal fun appleDeviceModel(model: String, machine: String?, simulatorMachine: String?): String =
+    if (!simulatorMachine.isNullOrBlank()) {
+        "$model Simulator $simulatorMachine"
+    } else {
+        listOfNotNull(model, machine?.takeIf(String::isNotBlank)).distinct().joinToString(" ")
+    }

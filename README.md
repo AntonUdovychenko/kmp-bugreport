@@ -6,6 +6,8 @@ Drop-in in-app bug reporting for **Compose Multiplatform** — Android, iOS, des
 <p align="center">
   <img src="docs/media/android-demo.gif" width="300"
        alt="On Android, taking a screenshot opens the report form with the screen attached; the user writes a Markdown description, circles the error, crops the image and sends it">
+  <img src="docs/media/ios-demo.gif" width="300"
+       alt="On iOS, the bug icon opens the report form with the screen attached; the user writes a Markdown description, circles and crops the error, adds a photo from the photo picker and sends it">
 </p>
 
 - **Screenshot capture** of your app's content when the report opens. On iOS and Android 14+ the
@@ -26,12 +28,14 @@ Drop-in in-app bug reporting for **Compose Multiplatform** — Android, iOS, des
 
 ## See it
 
-Recorded from the [sample app](#sample-app) on an Android 16 emulator: a booking fails, the user
-takes a screenshot, and the form opens with that screen attached.
+Recorded from the [sample app](#sample-app): a booking fails, and the form opens with that screen
+attached. The top row is an Android 16 emulator, where the user took a screenshot; the bottom row is
+an iOS 27 simulator, where they tapped the bug icon and added a photo with the photo picker.
 
 | Describe it in Markdown | Circle the problem | Crop to what matters | What your sender gets |
 |:---:|:---:|:---:|:---:|
-| <img src="docs/media/android-form.png" width="200" alt="Report form with a bold word and a numbered list"> | <img src="docs/media/android-markup.png" width="200" alt="Image editor with a red loop around the error message"> | <img src="docs/media/android-crop.png" width="200" alt="Crop mode with the frame dragged to the failing card"> | <img src="docs/media/android-inbox.png" width="200" alt="The received report: Markdown, the edited JPEG, redacted logs and the device"> |
+| <img src="docs/media/android-form.png" width="200" alt="Android: report form with a bold word and a numbered list"> | <img src="docs/media/android-markup.png" width="200" alt="Android: image editor with a red loop around the error message"> | <img src="docs/media/android-crop.png" width="200" alt="Android: crop mode with the frame dragged to the failing card"> | <img src="docs/media/android-inbox.png" width="200" alt="Android: the received report with the Markdown, the edited JPEG, redacted logs and the device"> |
+| <img src="docs/media/ios-form.png" width="200" alt="iOS: report form with a bold word, a numbered list, the edited screenshot and a picked photo"> | <img src="docs/media/ios-markup.png" width="200" alt="iOS: image editor with a red loop around the error message"> | <img src="docs/media/ios-crop.png" width="200" alt="iOS: crop mode with the frame dragged to the failing card"> | <img src="docs/media/ios-inbox.png" width="200" alt="iOS: the received report with the Markdown, two JPEGs, redacted logs and the simulated device"> |
 
 The same UI on desktop, following the app's light or dark theme:
 
@@ -147,7 +151,17 @@ redacted logs and the device.
 ./gradlew :sample:run                              # desktop
 ./gradlew :sample:wasmJsBrowserDevelopmentRun      # web, opens a browser
 ./gradlew :sample-android:installDebug             # Android device or emulator
+open sample-ios/iosApp.xcodeproj                   # iOS: pick a simulator in Xcode and Run
 ```
+
+The Xcode project builds the shared UI through Gradle (`:sample:embedAndSignAppleFrameworkForXcode`
+in a Run Script phase), so the first build takes a few minutes. To build it from the command line:
+
+```bash
+xcodebuild -project sample-ios/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 17' build
+```
+
+To run on a device, set `TEAM_ID` in `sample-ios/Configuration/Config.xcconfig`.
 
 On Android 14+ take a screenshot (power + volume down, or `adb shell input keyevent 120` on an
 emulator) to open the form without touching the app's own button.

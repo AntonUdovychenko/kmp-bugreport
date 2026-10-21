@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-// The sample app's UI, shared by every platform. Desktop and web run from this module;
-// Android runs through :sample-android. Not published.
+// The sample app's UI, shared by every platform. Desktop and web run from this module; Android runs
+// through :sample-android and iOS through the Xcode project in sample-ios/. Not published.
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -21,6 +21,14 @@ kotlin {
     }
 
     jvm()
+
+    // sample-ios/ embeds this as the `Sample` framework (`embedAndSignAppleFrameworkForXcode`).
+    listOf(iosArm64(), iosSimulatorArm64()).forEach { target ->
+        target.binaries.framework {
+            baseName = "Sample"
+            isStatic = true
+        }
+    }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {

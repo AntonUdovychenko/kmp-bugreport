@@ -67,3 +67,11 @@ jobs:
 
       - name: Compile iOS
         run: ./gradlew compileKotlinIosArm64 compileKotlinIosSimulatorArm64
+
+      # The framework sample-ios/ embeds, then the Xcode project itself. Its Run Script phase calls
+      # Gradle again and finds the framework up to date.
+      - name: Build the iOS sample
+        run: |
+          ./gradlew :sample:linkDebugFrameworkIosSimulatorArm64
+          xcodebuild -project sample-ios/iosApp.xcodeproj -scheme iosApp -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

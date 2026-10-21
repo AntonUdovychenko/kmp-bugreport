@@ -6,17 +6,22 @@ import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.toKString
 import platform.UIKit.UIDevice
+import platform.posix.getenv
 import platform.posix.uname
 import platform.posix.utsname
 
+@OptIn(ExperimentalForeignApi::class)
 internal actual fun currentDeviceInfo(): DeviceInfo {
     val device = UIDevice.currentDevice
     return DeviceInfo(
         platform = BugReportPlatform.Ios,
         operatingSystem = device.systemName,
         osVersion = device.systemVersion,
-        // `model` is just "iPhone"; the machine identifier ("iPhone16,2") says which one.
-        model = listOfNotNull(device.model, machineIdentifier()).distinct().joinToString(" "),
+        model = appleDeviceModel(
+            model = device.model,
+            machine = machineIdentifier(),
+            simulatorMachine = getenv("SIMULATOR_MODEL_IDENTIFIER")?.toKString(),
+        ),
     )
 }
 

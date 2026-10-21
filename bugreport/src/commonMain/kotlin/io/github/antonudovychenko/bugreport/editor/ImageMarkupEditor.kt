@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Undo
@@ -61,10 +65,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import io.github.antonudovychenko.bugreport.BugReportConfig
 import io.github.antonudovychenko.bugreport.internal.LocalBugReportStrings
 import io.github.antonudovychenko.bugreport.internal.bugReportStrings
+import io.github.antonudovychenko.bugreport.internal.fullScreenDialogProperties
 import kotlin.math.roundToInt
 
 private enum class EditorMode { Draw, Crop }
@@ -97,7 +101,7 @@ public fun ImageMarkupEditor(
     val strings = bugReportStrings()
     Dialog(
         onDismissRequest = onCancel,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
+        properties = fullScreenDialogProperties(),
     ) {
         CompositionLocalProvider(LocalBugReportStrings provides strings) {
             Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
@@ -153,7 +157,13 @@ internal fun ImageMarkupEditorContent(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+    // The black background runs under the system bars; the controls and the image stay clear of
+    // them and of a notch (on iOS, the safe area).
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout)),
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
