@@ -1,6 +1,6 @@
 [versions]
-# Kept in step with the CarGuy client (../gradle/libs.versions.toml) while the library lives in that
-# repo: the client consumes this build through `includeBuild`, so a drift here is a drift there.
+# These become the floor for every app that uses the library: Gradle resolves a conflict to the
+# higher version, so raising Compose or Kotlin here upgrades consumers. Move them deliberately.
 agp = "9.0.0"
 android-compileSdk = "36"
 android-minSdk = "24"
